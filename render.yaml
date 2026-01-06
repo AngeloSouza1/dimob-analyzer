@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: dimob-analyzer
+    runtime: docker
+    plan: free
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: DIMOB_SENHA
+        sync: false
+    healthCheckPath: /
+

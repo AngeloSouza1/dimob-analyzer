@@ -18,7 +18,7 @@ def verificar_senha():
     
     if not st.session_state.autenticado:
         # Senha deve ser definida via variável de ambiente
-        # No Railway: Variables > New Variable > DIMOB_SENHA=sua_senha_aqui
+        # No Render: Environment Variables > Add > DIMOB_SENHA=sua_senha_aqui
         # Localmente: export DIMOB_SENHA=sua_senha_aqui
         senha_correta = None
         
@@ -39,7 +39,7 @@ def verificar_senha():
             st.error("⚠️ **Senha não configurada!**")
             st.warning(
                 "Configure a variável de ambiente `DIMOB_SENHA` para acessar a aplicação.\n\n"
-                "**No Railway:** Vá em Variables e adicione `DIMOB_SENHA=sua_senha_aqui`"
+                "**No Render:** Vá em Environment Variables e adicione `DIMOB_SENHA=sua_senha_aqui`"
             )
             st.stop()
         

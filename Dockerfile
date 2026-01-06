@@ -13,9 +13,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar código da aplicação
 COPY . .
 
-# Expor porta (Railway usa variável PORT)
+# Expor porta (Render/Railway usam variável PORT)
 EXPOSE 8080
 
 # Comando para iniciar Streamlit
+# Render define automaticamente a variável PORT
 CMD streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
 

@@ -49,61 +49,80 @@ export DIMOB_SENHA=sua_senha_segura_aqui
 streamlit run app.py
 ```
 
-**Para produção (Railway):**
-Configure nas variáveis de ambiente do Railway (veja seção Deploy abaixo).
+**Para produção (Render):**
+Configure nas variáveis de ambiente do Render (veja seção Deploy abaixo).
 
 ⚠️ **IMPORTANTE**: 
 - Nunca commite senhas no código ou no Git
 - Use variáveis de ambiente sempre
 - A senha é obrigatória - a aplicação não funcionará sem ela
 
-## 🌐 Deploy no Railway
+## 🌐 Deploy no Render
 
-Este projeto está configurado para deploy no **Railway** com Docker.
+Este projeto está configurado para deploy no **Render** com Docker.
 
 ### Passo a passo:
 
-1. **Criar conta no Railway**
-   - Acesse [railway.app](https://railway.app)
+1. **Criar conta no Render**
+   - Acesse [render.com](https://render.com)
    - Faça login com sua conta GitHub
 
-2. **Criar novo projeto**
-   - Clique em "New Project"
-   - Selecione "Deploy from GitHub repo"
-   - Escolha seu repositório `dimob-analyzer`
+2. **Criar novo Web Service**
+   - No dashboard, clique em "New +"
+   - Selecione "Web Service"
+   - Conecte seu repositório GitHub
+   - Escolha o repositório `dimob-analyzer`
 
-3. **Configurar variáveis de ambiente**
-   - Vá na aba "Variables" do seu serviço
-   - Clique em "New Variable"
+3. **Configurar o serviço**
+   - **Name**: `dimob-analyzer` (ou o nome que preferir)
+   - **Region**: Escolha a região mais próxima (ex: `Oregon (US West)`)
+   - **Branch**: `main` (ou `master`)
+   - **Runtime**: `Docker` (o Render detectará o Dockerfile automaticamente)
+   - **Plan**: `Free` (ou escolha um plano pago)
+
+4. **Configurar variáveis de ambiente**
+   - Role até a seção "Environment Variables"
+   - Clique em "Add Environment Variable"
    - Adicione:
      ```
-     Nome: DIMOB_SENHA
-     Valor: sua_senha_segura_aqui
+     Key: DIMOB_SENHA
+     Value: sua_senha_segura_aqui
      ```
-   - Clique em "Add"
+   - Clique em "Save Changes"
 
-4. **Deploy automático**
-   - O Railway detectará o `Dockerfile` automaticamente
-   - O build e deploy iniciarão automaticamente
-   - Aguarde alguns minutos para o processo completar
+5. **Deploy**
+   - Clique em "Create Web Service"
+   - O Render iniciará o build e deploy automaticamente
+   - Aguarde alguns minutos (primeiro deploy pode levar 5-10 minutos)
 
-5. **Acessar aplicação**
-   - Após o deploy, o Railway fornecerá uma URL pública
-   - A aplicação estará disponível em: `https://seu-projeto.up.railway.app`
+6. **Acessar aplicação**
+   - Após o deploy, o Render fornecerá uma URL pública
+   - A aplicação estará disponível em: `https://dimob-analyzer.onrender.com` (ou URL customizada)
    - Você pode configurar um domínio customizado nas configurações
+
+### Opção alternativa (sem Docker):
+
+Se preferir usar buildpacks ao invés de Docker:
+
+1. Nas configurações do serviço, mude:
+   - **Runtime**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `streamlit run app.py --server.port=$PORT --server.address=0.0.0.0`
 
 ### Configurações importantes:
 
-- **Porta**: Railway define automaticamente a variável `PORT` (não precisa configurar)
+- **Porta**: Render define automaticamente a variável `PORT` (não precisa configurar)
 - **Senha**: **OBRIGATÓRIO** configurar `DIMOB_SENHA` nas variáveis de ambiente
-- **HTTPS**: Automático no Railway
-- **Redeploy**: Automático a cada push no branch conectado (geralmente `main` ou `master`)
+- **HTTPS**: Automático no Render
+- **Redeploy**: Automático a cada push no branch conectado
+- **Sleep mode**: No plano gratuito, o serviço "dorme" após 15 minutos de inatividade (primeiro acesso pode ser lento)
 
 ### Troubleshooting:
 
-- **Erro "Senha não configurada"**: Verifique se a variável `DIMOB_SENHA` está configurada no Railway
-- **Build falha**: Verifique os logs no Railway para ver o erro específico
-- **Aplicação não inicia**: Verifique se a porta está configurada corretamente (Railway faz isso automaticamente)
+- **Erro "Senha não configurada"**: Verifique se a variável `DIMOB_SENHA` está configurada no Render
+- **Build falha**: Verifique os logs no Render para ver o erro específico
+- **Aplicação não inicia**: Verifique se a porta está configurada corretamente (Render faz isso automaticamente)
+- **Timeout no primeiro acesso**: Normal no plano gratuito - o serviço "acorda" após alguns segundos
 
 ## 📝 Estrutura do Projeto
 
@@ -112,9 +131,11 @@ dimob-analyzer/
 ├── app.py              # Aplicação principal Streamlit
 ├── dimob_utils.py      # Funções de análise DIMOB
 ├── requirements.txt    # Dependências Python
-├── Dockerfile          # Configuração Docker para Railway
+├── Dockerfile          # Configuração Docker para Render/Railway
 ├── .dockerignore       # Arquivos ignorados no build Docker
-├── railway.json        # Configurações do Railway
+├── render.yaml         # Configurações do Render (opcional)
+├── start.sh            # Script de inicialização (alternativa)
+├── railway.json        # Configurações do Railway (se usar Railway)
 └── README.md          # Este arquivo
 ```
 
