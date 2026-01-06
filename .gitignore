@@ -10,7 +10,21 @@ ENV/
 .venv
 
 # Streamlit
-.streamlit/
+.streamlit/secrets.toml
+.streamlit/.gitkeep
+.streamlit/cache/
+
+# Dados sensíveis - NUNCA commitar arquivos DIMOB reais
+*.txt
+!requirements.txt
+!README.md
+dimob_*.txt
+dados/
+uploads/
+*.dimob
+
+# Docker
+.dockerignore
 
 # IDE
 .vscode/
@@ -25,4 +39,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Variáveis de ambiente locais
+.env
+.env.local
+.env.*.local
 

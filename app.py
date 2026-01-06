@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 from pathlib import Path
 from dimob_utils import analisar_dimob
 
@@ -8,6 +9,60 @@ st.set_page_config(
     page_icon="📄",
     layout="centered"
 )
+
+# Autenticação simples por senha
+def verificar_senha():
+    """Verifica se o usuário está autenticado"""
+    if 'autenticado' not in st.session_state:
+        st.session_state.autenticado = False
+    
+    if not st.session_state.autenticado:
+        # Senha deve ser definida via variável de ambiente
+        # No Railway: Variables > New Variable > DIMOB_SENHA=sua_senha_aqui
+        # Localmente: export DIMOB_SENHA=sua_senha_aqui
+        senha_correta = None
+        
+        # Tentar obter do Streamlit Secrets (produção)
+        try:
+            if hasattr(st, 'secrets') and 'DIMOB_SENHA' in st.secrets:
+                senha_correta = st.secrets['DIMOB_SENHA']
+        except:
+            pass
+        
+        # Fallback para variável de ambiente (sem senha padrão em produção)
+        if not senha_correta:
+            senha_correta = os.getenv('DIMOB_SENHA')
+        
+        # Verificar se senha foi configurada
+        if not senha_correta:
+            st.title("🔒 Acesso Restrito")
+            st.error("⚠️ **Senha não configurada!**")
+            st.warning(
+                "Configure a variável de ambiente `DIMOB_SENHA` para acessar a aplicação.\n\n"
+                "**No Railway:** Vá em Variables e adicione `DIMOB_SENHA=sua_senha_aqui`"
+            )
+            st.stop()
+        
+        st.title("🔒 Acesso Restrito")
+        st.warning("Esta aplicação é privada. Digite a senha para continuar.")
+        
+        senha = st.text_input("Senha:", type="password", key="senha_input")
+        
+        col1, col2 = st.columns([1, 4])
+        with col1:
+            if st.button("Entrar"):
+                if senha == senha_correta:
+                    st.session_state.autenticado = True
+                    st.rerun()
+                else:
+                    st.error("❌ Senha incorreta!")
+        
+        st.stop()
+    
+    return True
+
+# Verificar autenticação antes de mostrar o conteúdo
+verificar_senha()
 
 # CSS para destacar o card de R02 (imóveis)
 st.markdown(
