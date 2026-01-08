@@ -399,16 +399,13 @@ if uploaded_file is not None:
         conteudo = bytes_data.decode(errors="ignore")
 
     total, r01, r02, outros = analisar_dimob(conteudo)
-    txt_df = extrair_tabela_txt(conteudo)
     r02_df = extrair_tabela_r02(conteudo)
 
-    resumo_col, botao_col, botao_col2 = st.columns([4, 1, 1])
+    resumo_col, botao_col = st.columns([4, 1])
     with resumo_col:
         st.subheader("Resumo do arquivo")
     with botao_col:
         ver_tabela_r02 = st.button("Ver tabela R02", use_container_width=True)
-    with botao_col2:
-        ver_tabela = st.button("Ver tabela bruta", use_container_width=True)
 
     if ver_tabela_r02:
         if r02_df.empty:
@@ -419,12 +416,6 @@ if uploaded_file is not None:
                 uploaded_file.name,
                 titulo=f"Tabela R02: {uploaded_file.name}",
             )
-
-    if ver_tabela:
-        if txt_df.empty:
-            st.warning("Não foi possível extrair dados do TXT.")
-        else:
-            abrir_modal_tabela_txt(txt_df, uploaded_file.name)
 
     st.write(f"**Arquivo:** `{uploaded_file.name}`")
 
